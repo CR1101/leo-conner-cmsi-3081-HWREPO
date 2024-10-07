@@ -52,17 +52,101 @@ export function say(word) {
   return words
 }
 // Write your line count function here
-export async function meaningfulLineCount(file) {
-
-  const content = await open(file);
-  let meaningfulLines = 0; 
-  for await (const line of content.readLines()) {
-    const trimmedLine = line.trim();
-    if (trimmedLine !== "" && !trimmedLine.startsWith('#')) {
-      meaningfulLines ++;
+export async function meaningfulLineCount(filename) {
+  let count = 0
+  const file = await open(filename, "r")
+  for await (const line of file.readLines()) {
+    // Note that readLines will autoclose the file, yay
+    const trimmed = line.trim()
+    if (trimmed && !trimmed.startsWith("#")) {
+      count++
     }
   }
-  await content.close;
-  return meaningfulLines;
+  return count
 }
-// Write your Quaternion class here
+
+// Write your Quaternion class here///
+export class Quaternion {
+  constructor(a, b, c, d) {
+    this.a = a
+    this.b = b
+    this.c = c
+    this.d = d
+    Object.freeze(this)
+  }
+
+  get coefficients() {
+    return [this.a, this.b, this.c, this.d]
+  }
+
+  plus(anotherQuaternion) {
+    return new Quaternion(
+      this.a + anotherQuaternion.a,
+      this.b + anotherQuaternion.b,
+      this.c + anotherQuaternion.c,
+      this.d + anotherQuaternion.d
+    )
+  }
+
+  get conjugate() {
+    return new Quaternion(this.a, -this.b, -this.c, -this.d)
+  }
+
+  times(anotherQuaternion) {
+    const theNewA =
+      this.a * anotherQuaternion.a -
+      this.b * anotherQuaternion.b -
+      this.c * anotherQuaternion.c -
+      this.d * anotherQuaternion.d
+    const theNewB =
+      this.a * anotherQuaternion.b +
+      this.b * anotherQuaternion.a +
+      this.c * anotherQuaternion.d -
+      this.d * anotherQuaternion.c
+    const theNewC =
+      this.a * anotherQuaternion.c -
+      this.b * anotherQuaternion.d +
+      this.c * anotherQuaternion.a +
+      this.d * anotherQuaternion.b
+    const theNewD =
+      this.a * anotherQuaternion.d +
+      this.b * anotherQuaternion.c -
+      this.c * anotherQuaternion.b +
+      this.d * anotherQuaternion.a
+    return new Quaternion(theNewA, theNewB, theNewC, theNewD)
+  }
+
+  toString() {
+    if (this.a === 0 && this.b === 0 && this.c === 0 && this.d === 0) {
+      return "0"
+    }
+    const aTemplate = `${this.a === 0 ? "" : this.a}`
+    const bTemplate = `${
+      this.b === 0
+        ? ""
+        : `${this.b < 0 ? "-" : this.a !== 0 ? "+" : ""}${
+            this.b === 1 || this.b === -1 ? "" : Math.abs(this.b)
+          }i`
+    }`
+    const cTemplate = `${
+      this.c === 0
+        ? ""
+        : `${this.c < 0 ? "-" : this.a !== 0 || this.b !== 0 ? "+" : ""}${
+            this.c === 1 || this.c === -1 ? "" : Math.abs(this.c)
+          }j`
+    }`
+    const dTemplate = `${
+      this.d === 0
+        ? ""
+        : `${
+            this.d < 0
+              ? "-"
+              : this.a !== 0 || this.b !== 0 || this.c !== 0
+              ? "+"
+              : ""
+          }${this.d === 1 || this.d === -1 ? "" : Math.abs(this.d)}k`
+    }`
+
+    return aTemplate + bTemplate + cTemplate + dTemplate
+  }
+}

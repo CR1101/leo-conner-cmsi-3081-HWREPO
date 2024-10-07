@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 
 public class Exercises {
     static Map<Integer, Long> change(long amount) {
@@ -20,12 +21,31 @@ public class Exercises {
         return counts;
     }
 
-    // Write your first then lower case function here
+    public static Optional<String> firstThenLowerCase(List<String> list, Predicate<String> predicate) {
+        return list.stream().filter(predicate).map(String::toLowerCase).findFirst();
+    }
 
-    // Write your say function here
+    public record Say(String phrase) {
+        public Say and(String nextWord) {
+            return new Say(this.phrase + " " + nextWord);
+        }
+    }
 
-    // Write your line count function here
+    public static Say say(String word) {
+        return new Say(word);
+    }
+
+    public static Say say() {
+        return new Say("");
+    }
+    public static long meaningfulLineCount(String filename) throws IOException, FileNotFoundException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            return reader.lines().filter(line -> !line.trim().isEmpty() && !line.trim().startsWith("#"))
+            .count();
+        }
+    }
 }
+
 
 // Write your Quaternion record class here
 
