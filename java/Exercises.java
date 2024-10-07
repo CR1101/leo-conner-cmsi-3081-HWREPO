@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 
 public class Exercises {
     static Map<Integer, Long> change(long amount) {
@@ -38,14 +37,13 @@ public class Exercises {
     public static Say say() {
         return new Say("");
     }
-    public static long meaningfulLineCount(String filename) throws IOException, FileNotFoundException {
+    public static long meaningfulLineCount(String filename) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            return reader.lines().filter(line -> !line.trim().isEmpty() && !line.trim().startsWith("#"))
+        return reader.lines()
+            .filter(line -> !line.trim().isEmpty() && !line.trim().startsWith("#"))
             .count();
-        }
     }
-
-
+}
 }
 
 record Quaternion(double a, double b, double c, double d) {
