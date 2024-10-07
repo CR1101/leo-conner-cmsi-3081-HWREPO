@@ -101,7 +101,64 @@ record Quaternion(double a, double b, double c, double d) {
     } 
     }
 
+    sealed interface BinarySearchTree permits Empty, Node {
+        public int size();
+        public BinarySearchTree insert(String value);
+        public boolean contains(String value);  
+    }
+final record Empty() implements BinarySearchTree{
+    @Override
+    public int size() {
+        return 0;
+    }
 
+    @Override
+    public boolean contains(String value) {
+        return false;
+    }
 
+    @Override
+    public BinarySearchTree insert(String value) {
+        return new Node(value, new Empty(), new Empty());
+    }
 
-// Write your BinarySearchTree sealed interface and its implementations here
+    @Override
+    public String toString() {
+        return "()";
+    }
+}
+
+final record Node(String value, BinarySearchTree right, BinarySearchTree left) implements BinarySearchTree {
+
+    @Override
+    public int size() {
+        return 1 + left.size() + right.size();
+    }
+
+    @Override
+    public boolean contains(String value) {
+        if(this.value.equals(value)) {
+            return true;
+        } else if (this.value.compareTo(value) > 0) {
+            return left.contains(value);
+        } else {
+            return right.contains(value);
+        }
+    }
+
+    @Override
+    public BinarySearchTree insert(String value) {
+        if(this.value.equals(value)) {
+            return this;
+        } else if (this.value.compareTo(value) > 0) {
+            return new Node(this.value, right, left.insert(value));
+        } else {
+            return new Node(this.value, right.insert(value), left);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "(" + left.toString().replace("()", "") + value + right.toString().replace("()", "") + ")";
+    } 
+}
