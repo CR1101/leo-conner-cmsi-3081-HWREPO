@@ -47,15 +47,15 @@ export async function meaningfulLineCount(filename: string): Promise<number> {
 }
 
 interface Sphere {
-  kind: "Sphere";
-  radius: number;
+  readonly kind: "Sphere";
+  readonly radius: number;
 }
 
 interface Box {
-  kind: "Box";
-  width: number;
-  length: number;
-  depth: number;
+  readonly kind: "Box";
+  readonly width: number;
+  readonly length: number;
+  readonly depth: number;
 }
 
 export type Shape = Sphere | Box;
